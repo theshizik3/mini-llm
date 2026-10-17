@@ -1,0 +1,9 @@
+batch_size: 8
+tokenizer_batch_size: 64
+lr: 0.0001
+device: cuda
+tokenizer: ./tokenizer
+dtype: float32
+log_every: 10
+save_every: 10000
+tokenizer_len: 3.7e9

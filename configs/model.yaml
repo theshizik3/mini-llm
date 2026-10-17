@@ -1,0 +1,6 @@
+vocab_size: 32768
+hidden_layer: 768
+context: 1024
+heads: 8
+kv_heads: 4
+layers: 18
