@@ -36,7 +36,8 @@ class TrainConfig(BaseYAMLSettings):
     )
     batch_size: int
     tokenizer_batch_size: int
-    lr: float
+    pretrain_lr: float
+    sft_lr: float
     device: str
     hf_token: str
     tokenizer: str

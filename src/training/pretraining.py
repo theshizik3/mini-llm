@@ -78,7 +78,7 @@ def train():
     model.train()
 
     tokenizer = AutoTokenizer.from_pretrained(train_cfg.tokenizer)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.lr)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.pretrain_lr)
 
     data_iter = dataset_iterator(train_cfg, tokenizer)
 

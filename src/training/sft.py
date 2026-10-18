@@ -80,7 +80,7 @@ def train():
     model.to(device=train_cfg.device)
     model.train()
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.lr)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.sft_lr)
 
     step = 0
     loss = 0.0

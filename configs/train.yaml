@@ -1,6 +1,7 @@
 batch_size: 8
 tokenizer_batch_size: 64
-lr: 0.0001
+pretrain_lr: 3e-4
+sft_lr: 1e-5
 device: cuda
 tokenizer: ./tokenizer
 dtype: float32
