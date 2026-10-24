@@ -21,7 +21,6 @@ def make_iterator(cfg: TrainConfig):
     for shard in ds:
         length += len(shard)
         yield shard
-        print(f"{(length/cfg.tokenizer_len):02}")
         if length > cfg.tokenizer_len:
             return
 
