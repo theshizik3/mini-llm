@@ -89,7 +89,7 @@ def train():
 
     while True:
         try:
-            l, b += batch_train(
+            l, b = batch_train(
                 batch=train_cfg.batch_size,
                 context=model_cfg.context,
                 model=model,
@@ -107,9 +107,9 @@ def train():
         step += 1
 
         if step % train_cfg.log_every == 0:
-            avg_loss = running_loss / train_cfg.log_every
+            avg_loss = loss / train_cfg.log_every
             print(f"step {step} | loss {avg_loss:.4f} | ppl {math.exp(avg_loss):.2f}")
-            running_loss = 0.0
+            loss = 0.0
 
         if step % train_cfg.save_every == 0:
             ckpt_path = f"checkpoints/step_{step}.pt"

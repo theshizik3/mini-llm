@@ -95,9 +95,9 @@ def train():
         step += 1
             
         if step % train_cfg.log_every == 0:
-            avg_loss = running_loss / train_cfg.log_every
+            avg_loss = loss / train_cfg.log_every
             print(f"step {step} | loss {avg_loss:.4f}")
-            running_loss = 0.0
+            loss = 0.0
 
         if step % train_cfg.save_every == 0:
             ckpt_path = f"checkpoints/sft_{step}.pt"
