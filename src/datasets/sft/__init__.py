@@ -7,6 +7,6 @@ from src.datasets.sft.multi_sft_dataset import MultiSFTDataset
 __all__ = [
     "SFTDataset",
     "Ru0x7o",
-    "RuInstructions",
+    "RuAttnSigns",
     "MultiSFTDataset"
 ]

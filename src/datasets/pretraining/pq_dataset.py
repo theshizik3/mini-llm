@@ -12,7 +12,7 @@ HF_ENDPOINT = "https://huggingface.co"
 
 class ParquetDataset(ABC):
     repo: str
-    pat: str
+    pat: str = ""
     column: str
     
     def __init__(self, token, max_files=None, shuffle=False):
