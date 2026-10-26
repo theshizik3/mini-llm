@@ -14,8 +14,8 @@ class RoPE(nn.Module):
 
     def forward(self, x):
         seq_len = x.size(-2)
-        cos = self.cos[:seq_len]
-        sin = self.sin[:seq_len]
+        cos = self.cos[:seq_len].to(x.dtype)
+        sin = self.sin[:seq_len].to(x.dtype)
         x1 = x[..., 0::2]
         x2 = x[..., 1::2]
         rot1 = x1 * cos - x2 * sin

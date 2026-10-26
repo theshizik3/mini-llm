@@ -10,6 +10,7 @@ class LLM(nn.Module):
         self.norm = nn.RMSNorm(d_model)
         self.head = nn.Linear(d_model, vocab_size, bias=False)
         self.head.weight = self.embed.weight
+        self.embed.weight.data.mul_(0.02)
 
     def forward(self, idx):
         x = self.embed(idx)
