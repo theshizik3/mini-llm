@@ -11,7 +11,7 @@ class BaseYAMLSettings(BaseSettings):
         dotenv_settings,
         file_secret_settings,
     ):
-        return (init_settings, dotenv_settings(settings_cls), YamlConfigSettingsSource(settings_cls))
+        return (init_settings, dotenv_settings, YamlConfigSettingsSource(settings_cls))
 
 class ModelConfig(BaseYAMLSettings):
     model_config = SettingsConfigDict(
