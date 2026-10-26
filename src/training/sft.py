@@ -1,5 +1,4 @@
 import os
-import random
 import torch
 import torch.nn.functional as F
 
@@ -27,16 +26,18 @@ def dataset_iterator(cfg, tokenizer, context):
     
         n_prompt = len(p_ids)
         if len(ids) > context:
-            drop = len(ids) - context
-            n_prompt = max(n_prompt - drop, 0)
+            drop = min(len(ids) - context, n_prompt)
             ids = ids[drop:]
+            n_prompt -= drop
+            if len(ids) > context:
+                ids = ids[:context]
     
         labels = [-100] * len(ids)
         for p in range(max(n_prompt - 1, 0), len(ids) - 1):
             labels[p] = ids[p + 1]
         yield ids, labels
 
-def batch_train(batch, model, device, it, optimizer):
+def batch_train(batch, model, device, it, optimizer, pad):
     optimizer.zero_grad(set_to_none=True)
     batch_ids = []
     batch_labels = []
@@ -45,7 +46,7 @@ def batch_train(batch, model, device, it, optimizer):
         batch_ids.append(ids)
         batch_labels.append(labels)
     T = max(len(x) for x in batch_ids)
-    x = torch.full((len(batch_ids), T), PAD_TOKEN, dtype=torch.long, device=device)
+    x = torch.full((len(batch_ids), T), pad, dtype=torch.long, device=device)
     y = torch.full((len(batch_labels), T), -100, dtype=torch.long, device=device)
     for i, (ids, labels) in enumerate(zip(batch_ids, batch_labels)):
         x[i, :len(ids)] = torch.tensor(ids, dtype=torch.long, device=device)
@@ -63,6 +64,7 @@ def train():
     os.makedirs("checkpoints", exist_ok=True)
 
     tokenizer = AutoTokenizer.from_pretrained(train_cfg.tokenizer)
+    pad = tokenizer.convert_tokens_to_ids(PAD_TOKEN)
     data_iter = dataset_iterator(train_cfg, tokenizer, model_cfg.context)
 
     model = LLM(
@@ -79,6 +81,9 @@ def train():
     model.head.weight = model.embed.weight
     model.to(device=train_cfg.device)
     model.train()
+    
+    if hasattr(torch, "compile") and train_cfg.device == "cuda":
+        model = torch.compile(model)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.sft_lr)
 
@@ -87,7 +92,7 @@ def train():
 
     while True:
         try:
-            loss += batch_train(train_cfg.batch_size, model, train_cfg.device, data_iter, optimizer)
+            loss += batch_train(train_cfg.batch_size, model, train_cfg.device, data_iter, optimizer, pad)
         except StopIteration:
             torch.save(model.state_dict(), "checkpoints/sft_last.pt")
             break

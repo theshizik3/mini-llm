@@ -76,6 +76,9 @@ def train():
     model.to(dtype=getattr(torch, train_cfg.dtype))
     model.to(device=train_cfg.device)
     model.train()
+    
+    if hasattr(torch, "compile") and train_cfg.device == "cuda":
+        model = torch.compile(model)
 
     tokenizer = AutoTokenizer.from_pretrained(train_cfg.tokenizer)
     optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.pretrain_lr)
