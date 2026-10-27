@@ -79,13 +79,15 @@ def train():
     )
     model.to(dtype=getattr(torch, train_cfg.dtype))
     ckpt = torch.load(train_cfg.init_ckpt, map_location=train_cfg.device)
-    model.load_state_dict(ckpt["model"])
-    model.head.weight = model.embed.weight
+    
     model.to(device=train_cfg.device)
     model.train()
     
     if hasattr(torch, "compile") and train_cfg.device == "cuda":
         model = torch.compile(model)
+    
+    model.load_state_dict(ckpt["model"])
+    model.head.weight = model.embed.weight
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.sft_lr)
     w = train_cfg.warmup_steps
