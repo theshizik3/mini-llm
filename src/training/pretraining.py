@@ -4,6 +4,7 @@ import torch
 import torch.nn.functional as F
 import math
 
+from torch.optim.lr_scheduler import LambdaLR
 from transformers import AutoTokenizer
 
 from src.config import ModelConfig, TrainConfig
@@ -82,6 +83,12 @@ def train():
 
     tokenizer = AutoTokenizer.from_pretrained(train_cfg.tokenizer)
     optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.pretrain_lr)
+    w = train_cfg.warmup_steps
+    t = train_cfg.sched_steps
+    sched = LambdaLR(optimizer, lambda step: (
+        step / w if step < w
+        else train_cfg.min_lr_rate + 0.5 * (1 - train_cfg.min_lr_rate) * (1 + math.cos(math.pi * min((step - w) / (t - w), 1)))
+    ))
 
     data_iter = dataset_iterator(train_cfg, tokenizer)
 
@@ -109,9 +116,11 @@ def train():
 
         step += 1
 
+        sched.step()
+
         if step % train_cfg.log_every == 0:
             avg_loss = loss / train_cfg.log_every
-            print(f"step {step} | loss {avg_loss:.4f} | ppl {math.exp(avg_loss):.2f}")
+            print(f"step {step} | loss {avg_loss:.4f} | ppl {math.exp(avg_loss):.2f} | lr {sched.get_last_lr()[0]:.2e}")
             loss = 0.0
 
         if step % train_cfg.save_every == 0:

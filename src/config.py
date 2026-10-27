@@ -46,3 +46,6 @@ class TrainConfig(BaseYAMLSettings):
     save_every: int = 1000
     tokenizer_len: float = 10_000_000_000
     init_ckpt: str = ""
+    warmup_steps: int = 500
+    sched_steps: int = 500_000
+    min_lr_rate: float = 0.1
