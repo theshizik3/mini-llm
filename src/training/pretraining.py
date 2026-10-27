@@ -111,7 +111,11 @@ def train():
             loss += l
             token_buffer = b
         except StopIteration:
-            torch.save(model.state_dict(), "checkpoints/pretraining.pt")
+            torch.save({
+                "model": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "step": step,
+            }, f"checkpoints/step_{step}.pt")
             break
 
         step += 1

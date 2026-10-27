@@ -104,7 +104,11 @@ def train():
         try:
             loss += batch_train(train_cfg.batch_size, model, train_cfg.device, data_iter, optimizer, pad)
         except StopIteration:
-            torch.save(model.state_dict(), "checkpoints/sft_last.pt")
+            torch.save({
+                "model": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "step": step,
+            }, f"checkpoints/sft_{step}.pt")
             break
 
         step += 1
