@@ -1,5 +1,5 @@
 from src.datasets.pretraining.culturax import CulturaX
-from src.datasets.pretraining.multi_pq_dataset import MultiParquetDataset
+from src.datasets.pretraining.multi_dataset import MultiDataset
 from src.datasets.pretraining.taiga_proza import TaigaProza
 from src.datasets.pretraining.taiga_stihi import TaigaStihi
 from src.datasets.pretraining.wikipedia import Wikipedia
@@ -12,7 +12,7 @@ from src.datasets.pretraining.wikireading import Wikireading
 __all__ = [
     "CulturaX",
     "TaigaProza",
-    "MultiParquetDataset",
+    "MultiDataset",
     "TaigaStihi",
     "Wikipedia",
     "MathD0rj",

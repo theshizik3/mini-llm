@@ -1,7 +1,7 @@
 import random
 
 
-class MultiParquetDataset:
+class MultiDataset:
     def __init__(self, *args, shuffle=False, weights=None):
         self.datasets = list(args)
         self.shuffle = shuffle

@@ -14,17 +14,17 @@ from src.datasets.pretraining import *
 
 
 def dataset_iterator(cfg, tokenizer):
-    ds = MultiParquetDataset(
+    ds = MultiDataset(
+        Wikipedia(cfg.hf_token, 11, shuffle=True),
+        Wikireading(cfg.hf_token, 2, shuffle=True),
         CulturaX(cfg.hf_token, 1, shuffle=True),
         TaigaProza(cfg.hf_token, 3, shuffle=True),
-        Wikipedia(cfg.hf_token, 11, shuffle=True),
-        TaigaStihi(cfg.hf_token, 1, shuffle=True),
-        Kolmogorov(cfg.hf_token, shuffle=True),
         MathD0rj(cfg.hf_token, shuffle=True),
+        TaigaStihi(cfg.hf_token, 1, shuffle=True),
         ZeroAgency(cfg.hf_token, shuffle=True),
-        Wikireading(cfg.hf_token, 2, shuffle=True),
+        Kolmogorov(cfg.hf_token, shuffle=True),
         shuffle=True,
-        weights=[20, 10, 30, 3, 0.6, 6, 3, 27.4]
+        weights=[30, 27.4, 20, 10, 6, 3, 3, 0.6]
     )
     eos = tokenizer.convert_tokens_to_ids(EOS_TOKEN)
 
