@@ -1,9 +1,9 @@
-from src.datasets.pretraining.sft_pq_dataset import SFTParquetDataset
+from src.datasets.pretraining.process_pq_dataset import ProcessParquetDataset
 
 import re
 
 
-class MathD0rj(SFTParquetDataset):
+class MathD0rj(ProcessParquetDataset):
     repo = "d0rj/mathematics_dataset"
     columns = ["question", "answer"]
     

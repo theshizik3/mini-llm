@@ -10,7 +10,7 @@ import re
 import random
 
 
-class SFTParquetDataset(ParquetDataset, ABC):
+class ProcessParquetDataset(ParquetDataset, ABC):
     repo: str
     pat: str
     columns: Tuple[str]

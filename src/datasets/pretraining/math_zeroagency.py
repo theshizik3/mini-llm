@@ -1,9 +1,9 @@
-from src.datasets.pretraining.sft_pq_dataset import SFTParquetDataset
+from src.datasets.pretraining.process_pq_dataset import ProcessParquetDataset
 
 import json
 
 
-class ZeroAgency(SFTParquetDataset):
+class ZeroAgency(ProcessParquetDataset):
     repo = "ZeroAgency/ru-tasks-conversation"
     columns = ["conversation"]
 
