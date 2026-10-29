@@ -22,8 +22,9 @@ def dataset_iterator(cfg, tokenizer):
         Kolmogorov(cfg.hf_token, shuffle=True),
         MathD0rj(cfg.hf_token, shuffle=True),
         ZeroAgency(cfg.hf_token, shuffle=True),
+        Wikireading(cfg.hf_token, 2, shuffle=True),
         shuffle=True,
-        weights=[20, 10, 30, 3, 0.6, 6, 3]
+        weights=[20, 10, 30, 3, 0.6, 6, 3, 27.4]
     )
     eos = tokenizer.convert_tokens_to_ids(EOS_TOKEN)
 

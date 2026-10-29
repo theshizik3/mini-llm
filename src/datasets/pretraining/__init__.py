@@ -6,6 +6,7 @@ from src.datasets.pretraining.wikipedia import Wikipedia
 from src.datasets.pretraining.math_d0rj import MathD0rj
 from src.datasets.pretraining.kolmogorov import Kolmogorov
 from src.datasets.pretraining.math_zeroagency import ZeroAgency
+from src.datasets.pretraining.wikireading import Wikireading
 
 
 __all__ = [
@@ -16,5 +17,6 @@ __all__ = [
     "Wikipedia",
     "MathD0rj",
     "Kolmogorov",
-    "ZeroAgency"
+    "ZeroAgency",
+    "Wikireading"
 ]
