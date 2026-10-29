@@ -15,15 +15,15 @@ from src.datasets.pretraining import *
 
 def dataset_iterator(cfg, tokenizer):
     ds = MultiParquetDataset(
-        CulturaX(cfg.hf_token, 6, shuffle=True),
-        TaigaProza(cfg.hf_token, 20, shuffle=True),
-        Wikipedia(cfg.hf_token, 3, shuffle=True),
+        CulturaX(cfg.hf_token, 1, shuffle=True),
+        TaigaProza(cfg.hf_token, 3, shuffle=True),
+        Wikipedia(cfg.hf_token, 11, shuffle=True),
         TaigaStihi(cfg.hf_token, 1, shuffle=True),
         Kolmogorov(cfg.hf_token, shuffle=True),
         MathD0rj(cfg.hf_token, shuffle=True),
         ZeroAgency(cfg.hf_token, shuffle=True),
         shuffle=True,
-        weights=[60, 20, 5, 2, 0.3, 2, 3]
+        weights=[20, 10, 30, 3, 0.6, 6, 3]
     )
     eos = tokenizer.convert_tokens_to_ids(EOS_TOKEN)
 
