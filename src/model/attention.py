@@ -16,10 +16,7 @@ class Attention(nn.Module):
         self.wk = nn.Linear(d_model, n_kv_heads * self.head_dim, bias=False)
         self.wv = nn.Linear(d_model, n_kv_heads * self.head_dim, bias=False)
         self.out = nn.Linear(d_model, d_model, bias=False)
-
-        self.q_norm = nn.RMSNorm(self.head_dim)
-        self.k_norm = nn.RMSNorm(self.head_dim)
-
+        
         self.rope = RoPE(self.head_dim, max_len=max_len)
 
     def forward(self, x):
@@ -28,9 +25,6 @@ class Attention(nn.Module):
         q = self.wq(x).reshape(B, T, self.n_heads, self.head_dim).transpose(1, 2)
         k = self.wk(x).reshape(B, T, self.n_kv_heads, self.head_dim).transpose(1, 2)
         v = self.wv(x).reshape(B, T, self.n_kv_heads, self.head_dim).transpose(1, 2)
-
-        q = self.q_norm(q)
-        k = self.k_norm(k)
 
         q = self.rope(q)
         k = self.rope(k)
