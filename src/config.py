@@ -49,3 +49,15 @@ class TrainConfig(BaseYAMLSettings):
     warmup_steps: int = 500
     sched_steps: int = 500_000
     min_lr_rate: float = 0.1
+    
+class DatasetConfig(BaseYAMLSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        yaml_file="configs/dataset/config.yaml",
+        yaml_file_encoding="utf-8",
+        extra="ignore"
+    )
+    output_dir: str
+    shard_size: int
+    tokenizer: str
