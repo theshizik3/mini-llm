@@ -4,12 +4,12 @@ from src.model.ffn import FFN
 
 
 class Block(nn.Module):
-    def __init__(self, d_model, n_heads, n_kv_heads, max_len):
+    def __init__(self, d_model, intermediate_size, n_heads, n_kv_heads, max_len):
         super().__init__()
         self.norm1 = nn.RMSNorm(d_model)
         self.attn = Attention(d_model, n_heads, n_kv_heads, max_len)
         self.norm2 = nn.RMSNorm(d_model)
-        self.ffn = FFN(d_model)
+        self.ffn = FFN(d_model, intermediate_size)
 
     def forward(self, x):
         x = x + self.attn(self.norm1(x))

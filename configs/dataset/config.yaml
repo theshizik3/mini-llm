@@ -1,3 +1,0 @@
-output_dir: ./data/tokenized
-shard_size: 50_000_000
-tokenizer: ./tokenizer

@@ -1,5 +1,6 @@
 vocab_size: 32768
 hidden_layer: 512
+intermediate_size: 1536
 context: 1024
 heads: 8
 kv_heads: 4

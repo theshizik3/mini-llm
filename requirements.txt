@@ -1,5 +1,4 @@
 torch
-torchvision
 numpy
 tokenizers
 transformers
@@ -7,4 +6,4 @@ huggingface_hub
 pydantic-settings
 pyarrow
 httpx
-zstandard
+speedy_utils

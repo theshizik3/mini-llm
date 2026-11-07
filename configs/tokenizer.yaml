@@ -1,0 +1,6 @@
+path: ./artifacts/tokenizer
+dataset_path: ./data/cleaned
+
+vocab: 32768
+batch_size: 32
+train_seq_len: 2147483648
