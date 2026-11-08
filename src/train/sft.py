@@ -22,8 +22,8 @@ def dataset_iterator(path, eos, pad, seq_len, dtype=np.int32):
         y = dialog[start + 1 : start + L + 1]
 
         if seq_len > L:
-            x = x + [pad] * (seq_len - L)
-            y = y + [-100] * (seq_len - L)
+            x = x.tolist() + [pad] * (seq_len - L)
+            y = y.tolist() + [-100] * (seq_len - L)
 
         yield x, y
 
