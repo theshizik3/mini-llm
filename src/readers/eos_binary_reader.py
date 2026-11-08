@@ -12,7 +12,7 @@ class EOSBinaryReader(Reader):
     def __iter__(self):
         arr = np.memmap(self.path, dtype=self.dtype, mode="r")
         hits = np.flatnonzero(arr == self.eos)
-        starts = np.concatenate([[0], hits + 1])
-        ends = np.concatenate([hits + 1, [len(arr)]])
+        starts = np.concatenate([[0], (hits + 1)[:-1]])
+        ends = hits + 1
         for start, end in zip(starts, ends):
             yield np.asarray(arr[start:end])
