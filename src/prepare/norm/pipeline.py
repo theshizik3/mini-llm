@@ -9,6 +9,8 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 
+ROLES = {"human": "user", "gpt": "assistant"}
+
 def norm():
     cfg = NormConfig()
     
@@ -59,7 +61,11 @@ def norm():
                 break
             
             if ds.sharegpt:
-                chunk = tuple(transform_messages({"conversations": conv}, frm="sharegpt", to="chatml") for conv in chunk)
+                chunk = tuple(
+                    [{"role": ROLES.get(m["role"], m["role"]), "content": m["content"]}
+                    for m in transform_messages({"conversations": conv}, frm="sharegpt", to="chatml")]
+                    for conv in chunk
+                )
             
             filename = ds_output_dir / f"train_{n_shard:02d}.parquet"
             table = pa.Table.from_pydict({column: chunk}, schema=pa.schema([(column, t)]))
