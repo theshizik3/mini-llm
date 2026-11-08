@@ -29,12 +29,15 @@ def tokenize_sft():
     )
     
     eos = tokenizer.convert_tokens_to_ids(EOS_TOKEN)
-    
+
+    for old in output_path.glob("*.bin"):
+        old.unlink()
+
     shard_n = 0
     shard_len = 0
-    
+
     while True:
-        with open(output_path / f"train_{shard_n:02d}.bin", 'a') as f:
+        with open(output_path / f"train_{shard_n:02d}.bin", 'wb') as f:
             while shard_len < cfg.shard_size:
                 try:
                     row = next(it)
@@ -45,19 +48,19 @@ def tokenize_sft():
                     role = m.get("role")
                     content = m.get("content")
                     messages.append({"role": role, "content": content})
-                
+
                 text = tokenizer.apply_chat_template(
                     messages,
                     tokenize=False,
                     add_generation_prompt=False,
                 )
-                
+
                 ids = tokenizer(text, add_special_tokens=False)["input_ids"]
                 ids.append(eos)
-                
+
                 arr = np.asarray(ids, dtype=np.int32)
                 arr.tofile(f)
-                
+
                 shard_len += len(ids)
             else:
                 shard_len = 0

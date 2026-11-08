@@ -26,6 +26,9 @@ def norm():
         
         ds_output_dir = output_dir / ds.type / ds.name
         ds_output_dir.mkdir(parents=True, exist_ok=True)
+
+        for old in ds_output_dir.glob("train_*.parquet"):
+            old.unlink()
         
         it = iter(
             DirReader(

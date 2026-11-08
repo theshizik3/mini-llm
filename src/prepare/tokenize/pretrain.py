@@ -29,24 +29,27 @@ def tokenize_pretrain():
     )
     
     eos = tokenizer.convert_tokens_to_ids(EOS_TOKEN)
-    
+
+    for old in output_path.glob("*.bin"):
+        old.unlink()
+
     shard_n = 0
     shard_len = 0
-    
+
     while True:
-        with open(output_path / f"train_{shard_n:02d}.bin", 'a') as f:
+        with open(output_path / f"train_{shard_n:02d}.bin", 'wb') as f:
             while shard_len < cfg.shard_size:
                 try:
                     text = next(it)
                 except StopIteration:
                     break
-            
+
                 ids = tokenizer(text, add_special_tokens=False, return_attention_mask=False)["input_ids"]
                 ids.append(eos)
-                
+
                 arr = np.asarray(ids, dtype=np.int32)
                 arr.tofile(f)
-                
+
                 shard_len += len(ids)
             else:
                 shard_len = 0
