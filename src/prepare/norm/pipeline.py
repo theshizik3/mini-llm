@@ -55,9 +55,13 @@ def norm():
             case _:
                 raise TypeError("Invalid dataset type")
         
+        n_rows = 0
+        
         while True:
             chunk = tuple(islice(it, cfg.shard_rows))
             if not chunk:
+                break
+            if ds.max_rows and n_rows > ds.max_rows:
                 break
             
             if ds.sharegpt:
@@ -70,5 +74,6 @@ def norm():
             filename = ds_output_dir / f"train_{n_shard:02d}.parquet"
             table = pa.Table.from_pydict({column: chunk}, schema=pa.schema([(column, t)]))
             pq.write_table(table, filename)
-                
+            
+            n_rows += len(chunk)
             n_shard += 1

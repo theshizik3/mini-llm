@@ -7,3 +7,4 @@ pydantic-settings
 pyarrow
 httpx
 speedy_utils
+zstandard
