@@ -23,15 +23,21 @@ def fetch():
         shards.sort()
         rx = re.compile(ds.pat)
         shards = [f for f in shards if rx.search(f)]
+        
+        if not shards:
+            continue
+        
         if ds.files:
             if ds.random:
                 random.shuffle(shards)
             shards = shards[:ds.files]
         
         for shard in shards:
+            shard_output_dir = (output_dir / ds.name / shard).parent
+            shard_output_dir.mkdir(parents=True, exist_ok=True)
             url = f"{HF_ENDPOINT}/datasets/{ds.name}/resolve/main/{shard}"
             with requests.get(url, stream=True, headers=headers) as r:
                 r.raise_for_status()
-                with open(output_dir / ds.name / shard, "wb") as f:
+                with open(shard_output_dir, "wb") as f:
                     for chunk in r.iter_content(chunk_size=2**20):
                         f.write(chunk)
