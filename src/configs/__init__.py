@@ -5,6 +5,8 @@ from src.configs.tokenizer import TokenizerConfig
 from src.configs.train import TrainConfig
 from src.configs.norm_dataset import NormDatasetConfig
 from src.configs.norm import NormConfig
+from src.configs.fetch_dataset import FetchDatasetConfig
+from src.configs.fetch import FetchConfig
 
 
 __all__ = [
@@ -14,5 +16,7 @@ __all__ = [
     "TokenizerConfig",
     "TrainConfig",
     "NormConfig",
-    "NormDatasetConfig"
+    "NormDatasetConfig",
+    "FetchConfig",
+    "FetchDatasetConfig"
 ]
