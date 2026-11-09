@@ -19,9 +19,9 @@ def norm():
     
     for ds in cfg.datasets:
         match ds.reader:
-            case "ColumnParquetReader":
+            case "column_parquet_reader":
                 reader = ColumnParquetReader
-            case "ColumnZstdJsonlReader":
+            case "column_zstd_jsonl_reader":
                 reader = ColumnZstdJsonlReader
             case _:
                 raise TypeError("Reader not found")
