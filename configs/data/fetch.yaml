@@ -1,0 +1,24 @@
+output_dir: ./data/fetch
+datasets:
+  - name: IlyaGusev/ru_news
+    pat: ^.+\.jsonl.zst$
+  - name: IlyaGusev/pikabu
+    pat: ^.+\.jsonl.zst$
+    files: 3
+    random: true
+  - name: its5Q/wikireading
+    pat: ^.+\.jsonl.zst$
+    files: 1
+    random: true
+  - name: cointegrated/taiga_stripped_proza
+    pat: ^.+\.parquet$
+    files: 2
+    random: true
+  - name: HuggingFaceFW/finewiki
+    pat: data/ruwiki/.*\.parquet$
+    files: 1
+    random: true
+  - name: HuggingFaceFW/fineweb-2
+    pat: data/rus_Cyrl/train/.*\.parquet$
+    files: 3
+    random: true
