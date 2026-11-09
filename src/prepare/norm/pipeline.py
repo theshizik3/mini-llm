@@ -1,5 +1,5 @@
 from src.configs import NormConfig
-from src.readers import ColumnParquetReader, DirReader
+from src.readers import ColumnParquetReader, ColumnZstdJsonlReader, DirReader
 from llm_utils.chat_format.transform import transform_messages
 
 from pathlib import Path
@@ -21,6 +21,8 @@ def norm():
         match ds.reader:
             case "ColumnParquetReader":
                 reader = ColumnParquetReader
+            case "ColumnZstdJsonlReader":
+                reader = ColumnZstdJsonlReader
             case _:
                 raise TypeError("Reader not found")
         
