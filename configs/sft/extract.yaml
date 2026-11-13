@@ -1,3 +1,4 @@
 shard_size: 50mb
+input_dir: ./data/raw/sft
 output_dir: ./data/extract/sft
 datasets: 

@@ -9,3 +9,5 @@ jinja2
 webdataset
 humanfriendly
 datasets
+huggingface_hub
+requests

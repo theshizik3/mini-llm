@@ -1,4 +1,5 @@
 shard_size: 400mb
+input_dir: ./data/raw/pretrain
 output_dir: ./data/extract/pretrain
 datasets:
   - name: IlyaGusev/ru_news

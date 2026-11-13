@@ -1,0 +1,15 @@
+output_dir: ./data/raw/pretrain
+datasets:
+  - name: IlyaGusev/ru_news
+  - name: IlyaGusev/pikabu
+    n_files: 3
+  - name: its5Q/wikireading
+    n_files: 1
+  - name: cointegrated/taiga_stripped_proza
+    n_files: 2
+  - name: HuggingFaceFW/finewiki
+    config: ru
+    n_files: 1
+  - name: HuggingFaceFW/fineweb-2
+    config: rus_Cyrl
+    n_files: 3

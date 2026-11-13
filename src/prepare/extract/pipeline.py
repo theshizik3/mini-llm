@@ -1,4 +1,5 @@
 from jinja2 import Template
+from pathlib import Path
 
 import duckdb
 
@@ -12,20 +13,16 @@ def run_extract(cfg):
             "preserve_insertion_order": False
         }
     )
-    con.execute(
-        "CREATE SECRET hf_token (TYPE HUGGINGFACE, TOKEN ?)",
-        parameters=[cfg.hf_token]
-    )
     
-    with open("src/sql/extract_hf_datasets.sql.jinja", 'r') as f:
+    with open("src/sql/extract_datasets.sql.jinja", 'r') as f:
         t = Template(f.read())
     q = t.render(ds_n=len(cfg.datasets))
     
     params = []
     for ds in cfg.datasets:
         params.append(f"^{ds.column}$")
-        path = f"hf://datasets/{ds.name}@~parquet/{ds.pat}"
-        params.append(path)
+        path = Path(cfg.input_dir) / ds.name / "**/*.parquet"
+        params.append(str(path))
         params.append(ds.limit)
     
     rel = con.sql(q, params=params)

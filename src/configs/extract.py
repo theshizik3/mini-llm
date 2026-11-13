@@ -7,12 +7,10 @@ from typing import List
 
 class ExtractConfig(BaseYAMLSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
         yaml_file_encoding="utf-8",
         extra="ignore"
     )
     shard_size: str
+    input_dir: str
     output_dir: str
     datasets: List[ExtractDSConfig]
-    hf_token: str
