@@ -14,6 +14,8 @@ def run_extract(cfg):
         }
     )
     
+    Path(cfg.output_dir).mkdir(parents=True, exist_ok=True)
+    
     with open("src/sql/extract_datasets.sql.jinja", 'r') as f:
         t = Template(f.read())
     q = t.render(ds_n=len(cfg.datasets))
