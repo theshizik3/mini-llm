@@ -9,7 +9,7 @@ def run_extract(cfg):
             "temp_directory": "/tmp/duckdb_tmp",
             "max_temp_directory_size": "20GB",
             "memory_limit": "4GB",
-            "preserve_insertion_folder": False
+            "preserve_insertion_order": False
         }
     )
     con.execute(
