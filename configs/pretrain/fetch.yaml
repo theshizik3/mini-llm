@@ -1,12 +1,15 @@
 output_dir: ./data/raw/pretrain
 datasets:
+  - name: HuggingFaceFW/fineweb-2
+    pat: "data/rus_Cyrl/train/*.parquet"
+    n_files: 3
   - name: IlyaGusev/ru_news
-    pat: "**/*.jsonl.zst"
+    pat: "*.jsonl.zst"
   - name: IlyaGusev/pikabu
-    pat: "**/*.jsonl.zst"
+    pat: "*.jsonl.zst"
     n_files: 3
   - name: its5Q/wikireading
-    pat: "**.jsonl.zst"
+    pat: "*.jsonl.zst"
     n_files: 1
   - name: cointegrated/taiga_stripped_proza
     pat: "**/*.parquet"
@@ -14,6 +17,3 @@ datasets:
   - name: HuggingFaceFW/finewiki
     pat: "data/ruwiki/*.parquet"
     n_files: 1
-  - name: HuggingFaceFW/fineweb-2
-    pat: "data/rus_Cyrl/train/*.parquet"
-    n_files: 3

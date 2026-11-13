@@ -10,4 +10,4 @@ webdataset
 humanfriendly
 datasets
 huggingface_hub
-requests
+globre
