@@ -1,6 +1,10 @@
-{% for _ in range(ds_n) %}
+{% for ds in datasets %}
 (SELECT COLUMNS(?) AS text
+{% if ds.ext == "json" %}
+ FROM read_json_auto(?)
+{% else %}
  FROM read_parquet(?)
+{% endif %}
  LIMIT ?)
 {% if not loop.last %}
 UNION ALL

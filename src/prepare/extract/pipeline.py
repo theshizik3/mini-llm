@@ -18,12 +18,12 @@ def run_extract(cfg):
     
     with open("src/sql/extract_datasets.sql.jinja", 'r') as f:
         t = Template(f.read())
-    q = t.render(ds_n=len(cfg.datasets))
+    q = t.render(datasets=cfg.datasets)
     
     params = []
     for ds in cfg.datasets:
         params.append(f"^{ds.column}$")
-        path = Path(cfg.input_dir) / ds.name / "**/*.parquet"
+        path = Path(cfg.input_dir) / ds.name / "**/*"
         params.append(str(path))
         params.append(ds.limit)
     

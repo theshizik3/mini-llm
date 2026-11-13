@@ -3,6 +3,6 @@ from pydantic import BaseModel
 
 class FetchDSConfig(BaseModel):
     name: str
-    config: str = ""
+    pat: str
     n_files: int | None = None
     
