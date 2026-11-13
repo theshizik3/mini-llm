@@ -4,29 +4,27 @@ from src.configs.base import BaseYAMLSettings
 
 class TrainConfig(BaseYAMLSettings):
     model_config = SettingsConfigDict(
-        yaml_file="configs/train.yaml",
         yaml_file_encoding="utf-8",
         extra="ignore"
     )
     batch_size: int
     
-    pretrain_lr: float
-    sft_lr: float
+    lr: float
     min_lr_rate: float = 0.1
     
     warmup_steps: int = 500
     sched_steps: int = 500_000
     
-    device: str
-    dtype: str
+    device: str = "cpu"
+    dtype: str = "float32"
     compile: bool = False
     
     log_every: int = 10
     save_every: int = 1000
     
-    sft_init_ckpt: str
     dataset_dir: str
+    init_ckpt: str = ""
     checkpoints_dir: str = "./checkpoints"
     
-    eos_token: int
-    pad_token: int
+    eos_id: int | None = None
+    pad_id: int | None = None

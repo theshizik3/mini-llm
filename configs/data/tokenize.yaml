@@ -1,5 +1,0 @@
-input_dir: ./data/cleaned
-output_dir: ./data/tokenized
-shard_size: 50_000_000
-tokenizer: ./artifacts/tokenizer
-shuffle: true

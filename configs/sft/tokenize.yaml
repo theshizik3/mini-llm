@@ -1,0 +1,4 @@
+input_dir: ./data/extract/sft
+output_dir: ./data/bin/sft
+shard_size: 50mb
+tokenizer: ./artifacts/tokenizer

@@ -1,29 +1,29 @@
 from tokenizers.processors import TemplateProcessing
 from transformers import PreTrainedTokenizerFast
 
-from src.configs import TokenizerConfig
-from src.readers import ColumnParquetReader, DirReader
-from src.tokenizer import *
+from src.tokenizer.tokens import EOS_TOKEN, UNK_TOKEN, CHAT_TEMPLATE, PAD_TOKEN, ADDITIONAL_SPECIAL_TOKENS
+from src.tokenizer.tokenizer import build_tokenizer
+from src.tokenizer.trainer import build_trainer
+
+import duckdb
 
 
 def make_iterator(cfg):
-    ds = DirReader(
-        ColumnParquetReader,
-        dir=cfg.dataset_path,
-        pat="*.parquet",
-        column="text",
-        batch_size=cfg.batch_size,
-    )
+    cur = duckdb.sql("SELECT text FROM read_parquet(?)", params=[cfg.dataset_path+"/**/*.parquet"])
     length = 0
-    for s in ds:
-        length += len(s)
-        yield s
-        if length > cfg.train_seq_len:
-            return
+    offset = 0
+    while True:
+        batch = cur.offset(offset).limit(cfg.batch_size).fetchall()
+        if not batch:
+            break
+        offset += len(batch)
+        for row in batch:
+            yield row[0]
+            length += len(row[0])
+            if length > cfg.train_seq_len:
+                return
 
-def train():
-    cfg = TokenizerConfig()
-
+def run_train_tokenizer(cfg):
     tokenizer = build_tokenizer()
     trainer = build_trainer(cfg.vocab)
 

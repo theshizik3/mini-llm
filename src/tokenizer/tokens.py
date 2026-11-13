@@ -6,7 +6,7 @@ CHAT_TEMPLATE = (
     "<|im_start|>user\n{{ message['content'] }}<|im_end|>\n"
     "{% elif message['role'] == 'assistant' %}"
     "<|im_start|>assistant\n"
-    "{{ message['content'] or '' }}<|im_end|>\n"
+    "{% generation %}{{ message['content'] or '' }}<|im_end|>{% endgeneration %}\n"
     "{% endif %}"
     "{% endfor %}"
     "{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}"

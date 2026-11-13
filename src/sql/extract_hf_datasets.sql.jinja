@@ -1,0 +1,9 @@
+{% for _ in range(ds_n) %}
+(SELECT COLUMNS(?) AS text
+ FROM read_parquet(?)
+ LIMIT ?)
+{% if not loop.last %}
+UNION ALL
+{% endif %}
+{% endfor %}
+ORDER BY random()

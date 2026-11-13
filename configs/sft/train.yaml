@@ -1,0 +1,21 @@
+batch_size: 8
+
+lr: 1e-5
+min_lr_rate: 0.1
+
+warmup_steps: 500
+sched_steps: 70_000
+
+device: cuda
+dtype: float32
+compile: true
+
+log_every: 10
+save_every: 1000
+
+dataset_dir: ./data/bin/sft
+init_ckpt: ./path/to/checkpoint
+checkpoints_dir: ./artifacts/checkpoints/sft
+
+eos_id: eos_id
+pad_id: pad_id

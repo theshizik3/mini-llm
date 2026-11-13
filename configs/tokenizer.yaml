@@ -1,5 +1,5 @@
 path: ./artifacts/tokenizer
-dataset_path: ./data/cleaned
+dataset_path: ./data/extract/pretrain
 
 vocab: 32768
 batch_size: 32

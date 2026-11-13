@@ -1,0 +1,27 @@
+shard_size: 400mb
+output_dir: ./data/extract/pretrain
+datasets:
+  - name: IlyaGusev/ru_news
+    pat: "**/*.parquet"
+    limit: 1_000_000
+    column: text
+  - name: IlyaGusev/pikabu
+    pat: "**/*.parquet"
+    limit: 1_380_000
+    column: text_markdown
+  - name: its5Q/wikireading
+    pat: "**/*.parquet"
+    limit: 740_000
+    column: text
+  - name: cointegrated/taiga_stripped_proza
+    pat: "**/*.parquet"
+    limit: 141_000
+    column: text
+  - name: HuggingFaceFW/finewiki
+    pat: "**/*.parquet"
+    limit: 65_000
+    column: text
+  - name: HuggingFaceFW/fineweb-2
+    pat: "**/*.parquet"
+    limit: 740_000
+    column: text

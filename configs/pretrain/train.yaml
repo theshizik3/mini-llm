@@ -1,0 +1,17 @@
+batch_size: 8
+
+lr: 3e-4
+min_lr_rate: 0.1
+
+warmup_steps: 500
+sched_steps: 350_000
+
+device: cuda
+dtype: float32
+compile: true
+
+log_every: 10
+save_every: 10_000
+
+dataset_dir: ./data/bin/pretrain
+checkpoints_dir: ./artifacts/checkpoints/pretrain

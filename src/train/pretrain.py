@@ -1,23 +1,34 @@
 import torch
 import torch.nn.functional as F
+import webdataset as wds
 import math
 
 from pathlib import Path
 from torch.optim.lr_scheduler import LambdaLR
 
-from src.configs import ModelConfig, TrainConfig
 from src.model import build_model
-from src.readers import DirReader, BlockBinaryReader
 
+
+def dataset_iterator(path, context):
+    path = Path(path)
+    dataset = wds.WebDataset(map(str, path.rglob("*.tar"))).decode()
+
+    arr = []
+    
+    for sample in dataset:
+        arr.extend(sample["ids.npy"].tolist())
+        while len(arr) > context:
+            yield arr[:context], arr[1:context + 1]
+            del arr[:context]
 
 def batch_train(batch, model, device, it, optimizer):
     optimizer.zero_grad(set_to_none=True)
     batch_loss = 0.0
     for _ in range(batch):
-        chunk = next(it)
+        x, y = next(it)
 
-        x = torch.tensor(chunk[:-1], dtype=torch.long, device=device).unsqueeze(0)
-        y = torch.tensor(chunk[1:],  dtype=torch.long, device=device).unsqueeze(0)
+        x = torch.tensor(x, dtype=torch.long, device=device).unsqueeze(0)
+        y = torch.tensor(y,  dtype=torch.long, device=device).unsqueeze(0)
 
         logits = model(x)
         loss = F.cross_entropy(
@@ -32,11 +43,8 @@ def batch_train(batch, model, device, it, optimizer):
     optimizer.step()
     return batch_loss
 
-def train():
-    model_cfg = ModelConfig()
-    train_cfg = TrainConfig()
-    
-    ckpts_path = Path(train_cfg.checkpoints_dir) / "pretrain"
+def run_pretrain(model_cfg, train_cfg):    
+    ckpts_path = Path(train_cfg.checkpoints_dir)
     ckpts_path.mkdir(parents=True, exist_ok=True)
 
     model = build_model(
@@ -49,10 +57,11 @@ def train():
         n_layers=model_cfg.layers,
         dtype=getattr(torch, train_cfg.dtype),
         device=train_cfg.device,
-        compile_=train_cfg.compile
+        compile_=train_cfg.compile,
+        init_ckpt=train_cfg.init_ckpt
     )
-
-    optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.pretrain_lr)
+    
+    optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.lr)
     w = train_cfg.warmup_steps
     t = train_cfg.sched_steps
     sched = LambdaLR(optimizer, lambda step: (
@@ -60,20 +69,14 @@ def train():
         else train_cfg.min_lr_rate + 0.5 * (1 - train_cfg.min_lr_rate) * (1 + math.cos(math.pi * min((step - w) / (t - w), 1)))
     ))
 
-    ds_path = Path(train_cfg.dataset_dir) / "pretrain"
-    data_iter = iter(
-        DirReader(
-            reader=BlockBinaryReader,
-            dir=ds_path,
-            pat="*.bin",
-            seq_len=model_cfg.context+1,
-        )
-    )
+    data_iter = iter(dataset_iterator(train_cfg.dataset_dir, model_cfg.context))
 
     step = 0
     loss = 0.0
 
     while True:
+        sched.step()
+
         try:
             loss += batch_train(
                 batch=train_cfg.batch_size,
@@ -88,8 +91,6 @@ def train():
             break
 
         step += 1
-
-        sched.step()
 
         if step % train_cfg.log_every == 0:
             avg_loss = loss / train_cfg.log_every

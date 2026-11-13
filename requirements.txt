@@ -2,9 +2,10 @@ torch
 numpy
 tokenizers
 transformers
-huggingface_hub
+pydantic
 pydantic-settings
-pyarrow
-httpx
-speedy_utils
-zstandard
+duckdb
+jinja2
+webdataset
+humanfriendly
+datasets

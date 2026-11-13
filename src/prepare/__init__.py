@@ -1,11 +1,9 @@
-from src.prepare.tokenize import tokenize_sft, tokenize_pretrain
-from src.prepare.norm import norm
-from src.prepare.fetch import fetch
+from src.prepare.extract import run_extract
+from src.prepare.tokenize import run_tokenize_pretrain, run_tokenize_sft
 
 
 __all__ = [
-    "tokenize_sft",
-    "tokenize_pretrain",
-    "norm",
-    "fetch"
+    "run_tokenize_sft",
+    "run_tokenize_pretrain",
+    "run_extract"
 ]

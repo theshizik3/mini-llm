@@ -1,43 +1,48 @@
 import math
 import torch
 import torch.nn.functional as F
-import numpy as np
 
 from torch.optim.lr_scheduler import LambdaLR
 from pathlib import Path
+from datasets import load_from_disk
+from torch.utils.data import DataLoader
 
-from src.readers import EOSBinaryReader, DirReader
-from src.configs import ModelConfig, TrainConfig
 from src.model import build_model
 
 
-def dataset_iterator(path, eos, pad, seq_len, dtype=np.int32):
-    reader = DirReader(EOSBinaryReader, path, "*.bin", eos=eos, dtype=dtype)
+def make_collate_fn(pad_id, eos_id, seq_len):
+    def collate(batch):
+        seqs, labs = [], []
+        for ex in batch:
+            ids = ex["input_ids"]
+            m = ex["assistant_mask"]
+            if len(ids) > seq_len + 1:
+                ids = ids[-seq_len:] + [eos_id]
+                m = m[-seq_len:] + [True]
+            lab = [t if keep else -100 for t, keep in zip(ids, m)]
 
-    for dialog in reader:
-        L = min(len(dialog) - 1, seq_len)
-        start = len(dialog) - 1 - L
+            seqs.append(ids)
+            labs.append(lab)
 
-        x = dialog[start : start + L]
-        y = dialog[start + 1 : start + L + 1]
+        L = max(len(s) for s in seqs)
+        B = len(seqs)
+        x = torch.full((B, L), pad_id, dtype=torch.long)
+        y = torch.full((B, L), -100, dtype=torch.long)
+        for i, (s, l) in enumerate(zip(seqs, labs)):
+            x[i, :len(s)] = torch.tensor(s)
+            y[i, :len(s)] = torch.tensor(l)
 
-        if seq_len > L:
-            x = x.tolist() + [pad] * (seq_len - L)
-            y = y.tolist() + [-100] * (seq_len - L)
+        return x[:, :-1], y[:, 1:]
 
-        yield x, y
+    return collate
 
-def batch_train(batch, model, device, it, optimizer):
+def step_train(model, device, it, optimizer):
     optimizer.zero_grad(set_to_none=True)
-    x = []
-    y = []
-    for _ in range(batch):
-        ids, labels = next(it)
-        x.append(ids)
-        y.append(labels)
+
+    x, y = next(it)
     
-    x = torch.tensor(x, dtype=torch.long, device=device)
-    y = torch.tensor(y, dtype=torch.long, device=device)
+    x = x.to(device)
+    y = y.to(device)
     
     logits = model(x)
     loss = F.cross_entropy(logits.view(-1, logits.size(-1)), y.view(-1), ignore_index=-100)
@@ -48,11 +53,8 @@ def batch_train(batch, model, device, it, optimizer):
     
     return loss.item()
 
-def train():
-    model_cfg = ModelConfig()
-    train_cfg = TrainConfig()
-    
-    ckpts_path = Path(train_cfg.checkpoints_dir) / "sft"
+def run_sft(model_cfg, train_cfg):
+    ckpts_path = Path(train_cfg.checkpoints_dir)
     ckpts_path.mkdir(parents=True, exist_ok=True)
 
     model = build_model(
@@ -66,10 +68,10 @@ def train():
         dtype=getattr(torch, train_cfg.dtype),
         device=train_cfg.device,
         compile_=train_cfg.compile,
-        init_ckpt=train_cfg.sft_init_ckpt
+        init_ckpt=train_cfg.init_ckpt
     )
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.sft_lr)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.lr)
     
     w = train_cfg.warmup_steps
     t = train_cfg.sched_steps
@@ -79,28 +81,35 @@ def train():
         else train_cfg.min_lr_rate + 0.5 * (1 - train_cfg.min_lr_rate) * (1 + math.cos(math.pi * min((step - w) / (t - w), 1)))
     ))
     
-    ds_path = Path(train_cfg.dataset_dir) / "sft"
-    data_iter = dataset_iterator(
-        path=ds_path, 
-        eos=train_cfg.eos_token, 
-        pad=train_cfg.pad_token,
-        seq_len=model_cfg.context
+    ds = load_from_disk(train_cfg.dataset_dir)
+    loader = iter(
+        DataLoader(
+            dataset=ds, 
+            batch_size=train_cfg.batch_size, 
+            shuffle=True, 
+            num_workers=4, 
+            collate_fn=make_collate_fn(
+                train_cfg.pad_id, 
+                train_cfg.eos_id, 
+                model_cfg.context
+            )
+        )
     )
 
     step = 0
     loss = 0.0
 
     while True:
+        sched.step()
+
         try:
-            loss += batch_train(train_cfg.batch_size, model, train_cfg.device, data_iter, optimizer)
+            loss += step_train(model, train_cfg.device, loader, optimizer)
         except StopIteration:
             torch.save(model.state_dict(), ckpts_path / f"step_{step}.pt")
             print(f"completed at step: {step}")
             break
 
         step += 1
-
-        sched.step()
 
         if step % train_cfg.log_every == 0:
             avg_loss = loss / train_cfg.log_every
