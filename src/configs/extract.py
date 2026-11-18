@@ -10,7 +10,6 @@ class ExtractConfig(BaseYAMLSettings):
         yaml_file_encoding="utf-8",
         extra="ignore"
     )
-    shard_size: str
     input_dir: str
     output_dir: str
     datasets: List[ExtractDSConfig]

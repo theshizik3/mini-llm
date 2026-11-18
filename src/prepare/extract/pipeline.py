@@ -9,7 +9,7 @@ def run_extract(cfg):
         config={
             "temp_directory": "/tmp/duckdb_tmp",
             "max_temp_directory_size": "20GB",
-            "memory_limit": "4GB",
+            "memory_limit": "12GB",
             "preserve_insertion_order": False
         }
     )
@@ -23,14 +23,14 @@ def run_extract(cfg):
     params = []
     for ds in cfg.datasets:
         params.append(f"^{ds.column}$")
-        path = Path(cfg.input_dir) / ds.name / "**/*"
+        ext = ".jsonl.zst" if ds.ext == "json" else ".parquet"
+        path = Path(cfg.input_dir) / ds.name / ("**/*"+ext)
         params.append(str(path))
         params.append(ds.limit)
     
     rel = con.sql(q, params=params)
-
+    
     rel.write_parquet(
         file_name=cfg.output_dir,
-        per_thread_output=True,
-        row_group_size_bytes=cfg.shard_size
+        per_thread_output=True
     )
