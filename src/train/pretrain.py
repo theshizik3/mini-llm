@@ -11,7 +11,7 @@ from src.model import build_model
 
 def dataset_iterator(path, context):
     path = Path(path)
-    dataset = wds.WebDataset(map(str, path.rglob("*.tar"))).decode()
+    dataset = wds.WebDataset(map(str, path.rglob("*.tar")), shardshuffle=True).shuffle(400_000).decode()
 
     arr = []
     
