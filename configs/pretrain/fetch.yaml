@@ -2,7 +2,7 @@ output_dir: ./data/raw/pretrain
 datasets:
   - name: epfml/FineWeb2-HQ
     pat: "rus_Cyrl/*.parquet"
-    n_files: 9
+    n_files: 7
   - name: IlyaGusev/ru_news
     pat: "*.jsonl.zst"
   - name: its5Q/wikireading
@@ -10,13 +10,13 @@ datasets:
     n_files: 2
   - name: cointegrated/taiga_stripped_proza
     pat: "**/*.parquet"
-    n_files: 4
+    n_files: 3
   - name: HuggingFaceFW/finewiki
     pat: "data/ruwiki/*.parquet"
     n_files: 1
   - name: volosati/habr
     pat: "data/*.parquet"
-    n_files: 7
+    n_files: 6
   - name: KirillR/BearAtlas
     pat: "web_ru_edu_v1/*.parquet"
-    n_files: 7
+    n_files: 6
