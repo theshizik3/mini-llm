@@ -1,4 +1,4 @@
-input_dir: ./data/extract/pretrain
+input_dir: ./data/clean/pretrain
 output_dir: ./data/bin/pretrain
-shard_size: 200mb
+shard_size: 300mb
 tokenizer: ./artifacts/tokenizer

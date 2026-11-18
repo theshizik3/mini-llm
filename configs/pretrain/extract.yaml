@@ -1,28 +1,31 @@
-shard_size: 400mb
 input_dir: ./data/raw/pretrain
-output_dir: ./data/extract/pretrain
+output_dir: ./data/clean/pretrain
 datasets:
   - name: IlyaGusev/ru_news
-    limit: 1_000_000
+    limit: 225_000
     column: text
     ext: json
-  - name: IlyaGusev/pikabu
-    limit: 1_380_000
-    column: text_markdown
-    ext: json
   - name: its5Q/wikireading
-    limit: 740_000
+    limit: 330_000
     column: text
     ext: json
   - name: cointegrated/taiga_stripped_proza
-    limit: 141_000
+    limit: 60_000
     column: text
     ext: parquet
   - name: HuggingFaceFW/finewiki
-    limit: 65_000
+    limit: 295_000
     column: text
     ext: parquet
-  - name: HuggingFaceFW/fineweb-2
-    limit: 740_000
+  - name: epfml/FineWeb2-HQ
+    limit: 610_000
+    column: text
+    ext: parquet
+  - name: volosati/habr
+    limit: 67_000
+    column: text_markdown
+    ext: parquet
+  - name: KirillR/BearAtlas
+    limit: 650_000
     column: text
     ext: parquet
