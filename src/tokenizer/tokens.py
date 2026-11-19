@@ -15,13 +15,14 @@ CHAT_TEMPLATE = (
 UNK_TOKEN = "<|unk|>"
 PAD_TOKEN = "<|padding|>"
 EOS_TOKEN = "<|endoftext|>"
+BOS_TOKEN = "<|beginoftext|>"
 
 ADDITIONAL_SPECIAL_TOKENS = [
     "<|im_start|>",
     "<|im_end|>",
 ]
 
-SPECIAL_TOKENS = [UNK_TOKEN, PAD_TOKEN, EOS_TOKEN] + ADDITIONAL_SPECIAL_TOKENS
+SPECIAL_TOKENS = [UNK_TOKEN, PAD_TOKEN, BOS_TOKEN, EOS_TOKEN] + ADDITIONAL_SPECIAL_TOKENS
 
 CYRILLIC = [chr(c) for c in range(0x0410, 0x044F + 1)]
 CYRILLIC_EXTRA = list("ЁёІіЇїЄєҐґЪъЫыЬьЭэЮюЯя")

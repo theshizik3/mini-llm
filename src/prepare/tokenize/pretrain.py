@@ -14,6 +14,7 @@ def run_tokenize_pretrain(cfg):
     
     tokenizer = AutoTokenizer.from_pretrained(cfg.tokenizer)
     eos = tokenizer.eos_token_id
+    bos = tokenizer.bos_token_id
     
     cur = duckdb.sql("SELECT text FROM read_parquet(?)", params=[cfg.input_dir+"/**/*.parquet"])
     sample_idx = 0
@@ -27,8 +28,7 @@ def run_tokenize_pretrain(cfg):
                 break
             offset += len(batch)
             for row in batch:
-                ids = tokenizer(row[0], add_special_tokens=False, return_attention_mask=False)["input_ids"]
-                ids.append(eos)
+                ids = [bos] + tokenizer(row[0], add_special_tokens=False, return_attention_mask=False)["input_ids"] + [eos]
 
                 arr = np.asarray(ids, dtype=np.int32)
                 sink.write({

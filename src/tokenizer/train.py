@@ -1,7 +1,7 @@
 from tokenizers.processors import TemplateProcessing
 from transformers import PreTrainedTokenizerFast
 
-from src.tokenizer.tokens import EOS_TOKEN, UNK_TOKEN, CHAT_TEMPLATE, PAD_TOKEN, ADDITIONAL_SPECIAL_TOKENS
+from src.tokenizer.tokens import *
 from src.tokenizer.tokenizer import build_tokenizer
 from src.tokenizer.trainer import build_trainer
 
@@ -33,9 +33,10 @@ def run_train_tokenizer(cfg):
     )
 
     tokenizer.post_processor = TemplateProcessing(
-        single=f"$A {EOS_TOKEN}",
-        pair=f"$A {EOS_TOKEN} $B:1 {EOS_TOKEN}:1",
+        single=f"{BOS_TOKEN} $A {EOS_TOKEN}",
+        pair=f"{BOS_TOKEN} $A {EOS_TOKEN} $B:1 {EOS_TOKEN}:1",
         special_tokens=[
+            (BOS_TOKEN, tokenizer.token_to_id(BOS_TOKEN)),
             (EOS_TOKEN, tokenizer.token_to_id(EOS_TOKEN)),
         ],
     )
@@ -45,7 +46,7 @@ def run_train_tokenizer(cfg):
         unk_token=UNK_TOKEN,
         pad_token=PAD_TOKEN,
         eos_token=EOS_TOKEN,
-        bos_token=EOS_TOKEN,
+        bos_token=BOS_TOKEN,
         additional_special_tokens=ADDITIONAL_SPECIAL_TOKENS,
         chat_template=CHAT_TEMPLATE,
     )
