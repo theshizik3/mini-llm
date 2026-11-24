@@ -1,0 +1,2 @@
+input_dir: ./data/extracted/sft
+output_dir: ./data/clean/sft
