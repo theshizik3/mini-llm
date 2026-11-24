@@ -32,5 +32,6 @@ def run_extract(cfg):
     
     rel.write_parquet(
         file_name=cfg.output_dir,
-        per_thread_output=True
+        per_thread_output=True,
+        filename_pattern="train_{i}"
     )
