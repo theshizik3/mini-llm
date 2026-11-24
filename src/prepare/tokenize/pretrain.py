@@ -21,7 +21,7 @@ def run_tokenize_pretrain(cfg):
     
     offset = 0
     
-    with wds.ShardWriter(str(output_path / "train_%02d.tar"), maxsize=parse_size(cfg.shard_size, binary=True)) as sink:
+    with wds.ShardWriter(str(output_path / "train_%d.tar"), maxsize=parse_size(cfg.shard_size, binary=True)) as sink:
         while True:
             batch = cur.offset(offset).limit(50_000).fetchall()
             if not batch:
