@@ -16,7 +16,7 @@ def run_tokenize_pretrain(cfg):
     eos = tokenizer.eos_token_id
     bos = tokenizer.bos_token_id
     
-    cur = duckdb.sql("SELECT text FROM read_parquet(?)", params=[cfg.input_dir+"/**/*.parquet"])
+    cur = duckdb.sql("SELECT text, src FROM read_parquet(?)", params=[cfg.input_dir+"/**/*.parquet"])
     sample_idx = 0
     
     offset = 0
@@ -34,5 +34,6 @@ def run_tokenize_pretrain(cfg):
                 sink.write({
                     "__key__": f"sample_{sample_idx:09d}",
                     "ids.npy": arr,
+                    "src.txt": row[1]
                 })
                 sample_idx += 1

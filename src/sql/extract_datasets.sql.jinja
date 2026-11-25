@@ -1,5 +1,5 @@
 {% for ds in datasets %}
-(SELECT COLUMNS(?) AS text
+(SELECT COLUMNS(?) AS text, ? AS src
 {% if ds.ext == "json" %}
  FROM read_json_auto(?)
 {% else %}

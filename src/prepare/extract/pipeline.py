@@ -23,6 +23,7 @@ def run_extract(cfg):
     params = []
     for ds in cfg.datasets:
         params.append(f"^{ds.column}$")
+        params.append(ds.name)
         ext = ".jsonl.zst" if ds.ext == "json" else ".parquet"
         path = Path(cfg.input_dir) / ds.name / ("**/*"+ext)
         params.append(str(path))
