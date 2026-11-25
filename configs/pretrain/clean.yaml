@@ -1,0 +1,4 @@
+input_dir: ./data/extracted/pretrain
+output_dir: ./data/clean/pretrain
+min_ppl: 2150
+max_ppl: 125000

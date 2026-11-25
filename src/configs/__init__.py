@@ -7,7 +7,7 @@ from src.configs.extract import ExtractConfig
 from src.configs.extract_ds import ExtractDSConfig
 from src.configs.fetch import FetchConfig
 from src.configs.fetch_ds import FetchDSConfig
-from src.configs.dedup import DedupConfig
+from src.configs.clean import CleanConfig
 
 
 __all__ = [
@@ -20,5 +20,5 @@ __all__ = [
     "ExtractDSConfig",
     "FetchConfig",
     "FetchDSConfig",
-    "DedupConfig"
+    "CleanConfig"
 ]

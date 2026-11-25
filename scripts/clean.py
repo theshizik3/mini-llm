@@ -3,8 +3,8 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.prepare import run_dedup
-from src.configs import DedupConfig
+from src.prepare import run_clean
+from src.configs import CleanConfig
 
 import argparse
 
@@ -14,18 +14,15 @@ def main():
     
     subparsers = parser.add_subparsers(dest="command", required=True)
     
-    subparsers.add_parser("sft")
     subparsers.add_parser("pretrain")
 
     args = parser.parse_args()
     
     match args.command:
-        case "sft":
-            config = DedupConfig.from_yaml("configs/sft/dedup.yaml")
         case "pretrain":
-            config = DedupConfig.from_yaml("configs/pretrain/dedup.yaml")
+            config = CleanConfig.from_yaml("configs/pretrain/clean.yaml")
     
-    run_dedup(config)
+    run_clean(config)
     
 if __name__ == "__main__":
     main()

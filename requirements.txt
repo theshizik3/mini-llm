@@ -12,3 +12,5 @@ tokenizers==0.23.3
 torch==2.14.1+cu126
 transformers==5.20.2
 webdataset==1.0.2
+kenlm==0.3.0
+pyarrow==26.0.0

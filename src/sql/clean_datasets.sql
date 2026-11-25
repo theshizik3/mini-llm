@@ -1,0 +1,1 @@
+SELECT DISTINCT ON (text) * FROM read_parquet(?) WHERE perplexity(text) BETWEEN ? AND ?
