@@ -27,5 +27,5 @@ class TrainConfig(BaseYAMLSettings):
     
     init_ckpt: str = ""
     
-    eos_id: int | None = None
+    eot_id: int | None = None
     pad_id: int | None = None

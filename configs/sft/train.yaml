@@ -18,5 +18,5 @@ checkpoints_dir: ./artifacts/checkpoints/sft
 
 init_ckpt: ./path/to/checkpoint
 
-eos_id: eos_id
+eot_id: eot_id
 pad_id: pad_id

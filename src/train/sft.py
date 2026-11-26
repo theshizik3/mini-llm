@@ -11,14 +11,14 @@ from torch.utils.tensorboard import SummaryWriter
 from src.model import build_model
 
 
-def make_collate_fn(pad_id, eos_id, seq_len):
+def make_collate_fn(pad_id, eot_id, seq_len):
     def collate(batch):
         seqs, labs = [], []
         for ex in batch:
             ids = ex["input_ids"]
             m = ex["assistant_mask"]
             if len(ids) > seq_len + 1:
-                ids = ids[-seq_len:] + [eos_id]
+                ids = ids[-seq_len:] + [eot_id]
                 m = m[-seq_len:] + [True]
             lab = [t if keep else -100 for t, keep in zip(ids, m)]
 
@@ -96,7 +96,7 @@ def run_sft(model_cfg, train_cfg):
             num_workers=4, 
             collate_fn=make_collate_fn(
                 train_cfg.pad_id, 
-                train_cfg.eos_id, 
+                train_cfg.eot_id, 
                 model_cfg.context
             )
         )
