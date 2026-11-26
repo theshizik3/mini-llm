@@ -1,0 +1,49 @@
+[project]
+name = "mini-llm"
+version = "0.1.0"
+description = "A small LLM written from scratch in PyTorch"
+authors = [
+    { name = "theshizik3", email = "theshizik3@mail.ru" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=5.2.0",
+    "duckdb>=2.0.1",
+    "globre>=0.1.5",
+    "huggingface-hub>=2.4.0",
+    "humanfriendly>=10.0",
+    "jinja2>=3.1.6",
+    "kenlm>=0.3.0",
+    "numpy>=2.5.5",
+    "pyarrow>=26.0.1",
+    "pydantic>=2.14.4",
+    "pydantic-settings>=2.16.3",
+    "torch>=2.14.0",
+    "tokenizers>=0.23.3",
+    "transformers>=5.24.1",
+    "webdataset>=1.0.2",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu126" }
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.build-backend]
+module-name = ["scripts", "src"]
+module-root = "" 
+
+[project.scripts]
+fetch = "scripts.fetch:main"
+extract = "scripts.extract:main"
+clean = "scripts.clean:main"
+tokenize = "scripts.tokenize_:main"
+train_tokenizer = "scripts.train_tokenizer:main"
+train = "scripts.train:main"
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14.0"]
+build-backend = "uv_build"
