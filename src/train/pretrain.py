@@ -5,6 +5,7 @@ import math
 
 from pathlib import Path
 from torch.optim.lr_scheduler import LambdaLR
+from torch.utils.tensorboard import SummaryWriter
 
 from src.model import build_model
 
@@ -46,6 +47,9 @@ def batch_train(batch, model, device, it, optimizer):
 def run_pretrain(model_cfg, train_cfg):    
     ckpts_path = Path(train_cfg.checkpoints_dir)
     ckpts_path.mkdir(parents=True, exist_ok=True)
+    
+    logs_dir = Path(train_cfg.logs_dir)
+    logs_dir.mkdir(parents=True, exist_ok=True)
 
     model = build_model(
         vocab=model_cfg.vocab_size,
@@ -61,6 +65,8 @@ def run_pretrain(model_cfg, train_cfg):
         init_ckpt=train_cfg.init_ckpt
     )
     
+    writer = SummaryWriter(log_dir=str(logs_dir))
+    
     optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.lr)
     w = train_cfg.warmup_steps
     t = train_cfg.sched_steps
@@ -72,13 +78,12 @@ def run_pretrain(model_cfg, train_cfg):
     data_iter = iter(dataset_iterator(train_cfg.dataset_dir, model_cfg.context))
 
     step = 0
-    loss = 0.0
 
     while True:
         sched.step()
 
         try:
-            loss += batch_train(
+            loss = batch_train(
                 batch=train_cfg.batch_size,
                 model=model,
                 device=train_cfg.device,
@@ -90,13 +95,14 @@ def run_pretrain(model_cfg, train_cfg):
             print(f"completed at step: {step}")
             break
 
-        step += 1
+        writer.add_scalar("Loss/train", loss, step)
+        writer.add_scalar("PPL/train", math.exp(loss), step)
+        writer.add_scalar("Metrics/lr", sched.get_last_lr()[0], step)
 
-        if step % train_cfg.log_every == 0:
-            avg_loss = loss / train_cfg.log_every
-            print(f"step {step} | loss {avg_loss:.4f} | ppl {math.exp(avg_loss):.2f} | lr {sched.get_last_lr()[0]:.2e}")
-            loss = 0.0
+        step += 1
 
         if step % train_cfg.save_every == 0:
             torch.save(model.state_dict(), ckpts_path / f"step_{step}.pt")
             print(f"saved checkpoint: step_{step}.pt")
+
+    writer.close()

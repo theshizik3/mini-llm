@@ -10,21 +10,22 @@ class TrainConfig(BaseYAMLSettings):
     batch_size: int
     
     lr: float
-    min_lr_rate: float = 0.1
+    min_lr_rate: float
     
-    warmup_steps: int = 500
-    sched_steps: int = 500_000
+    warmup_steps: int
+    sched_steps: int
     
     device: str = "cpu"
     dtype: str = "float32"
     compile: bool = False
     
-    log_every: int = 10
     save_every: int = 1000
     
+    logs_dir: str = "./logs"
     dataset_dir: str
-    init_ckpt: str = ""
     checkpoints_dir: str = "./checkpoints"
+    
+    init_ckpt: str = ""
     
     eos_id: int | None = None
     pad_id: int | None = None

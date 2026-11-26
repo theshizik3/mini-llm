@@ -6,6 +6,7 @@ from torch.optim.lr_scheduler import LambdaLR
 from pathlib import Path
 from datasets import load_from_disk
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
 
 from src.model import build_model
 
@@ -56,7 +57,10 @@ def step_train(model, device, it, optimizer):
 def run_sft(model_cfg, train_cfg):
     ckpts_path = Path(train_cfg.checkpoints_dir)
     ckpts_path.mkdir(parents=True, exist_ok=True)
-
+    
+    logs_dir = Path(train_cfg.logs_dir)
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    
     model = build_model(
         vocab=model_cfg.vocab_size,
         hidden_layer=model_cfg.hidden_layer,
@@ -70,6 +74,8 @@ def run_sft(model_cfg, train_cfg):
         compile_=train_cfg.compile,
         init_ckpt=train_cfg.init_ckpt
     )
+
+    writer = SummaryWriter(log_dir=str(logs_dir))
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=train_cfg.lr)
     
@@ -97,26 +103,25 @@ def run_sft(model_cfg, train_cfg):
     )
 
     step = 0
-    loss = 0.0
 
     while True:
         sched.step()
 
         try:
-            loss += step_train(model, train_cfg.device, loader, optimizer)
+            loss = step_train(model, train_cfg.device, loader, optimizer)
         except StopIteration:
             torch.save(model.state_dict(), ckpts_path / f"step_{step}.pt")
             print(f"completed at step: {step}")
             break
 
+        writer.add_scalar("Loss/train", loss, step)
+        writer.add_scalar("Metrics/lr", sched.get_last_lr()[0], step)
+        
         step += 1
-
-        if step % train_cfg.log_every == 0:
-            avg_loss = loss / train_cfg.log_every
-            print(f"step {step} | loss {avg_loss:.4f} | lr {sched.get_last_lr()[0]:.2e}")
-            loss = 0.0
 
         if step % train_cfg.save_every == 0:
             torch.save(model.state_dict(), ckpts_path / f"step_{step}.pt")
             print(f"saved checkpoint: step_{step}.pt")
-            
+    
+    writer.close()
+    

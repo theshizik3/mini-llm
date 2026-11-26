@@ -10,12 +10,13 @@ device: cuda
 dtype: float32
 compile: true
 
-log_every: 10
 save_every: 1000
 
+logs_dir: ./artifacts/logs/sft
 dataset_dir: ./data/bin/sft
-init_ckpt: ./path/to/checkpoint
 checkpoints_dir: ./artifacts/checkpoints/sft
+
+init_ckpt: ./path/to/checkpoint
 
 eos_id: eos_id
 pad_id: pad_id
