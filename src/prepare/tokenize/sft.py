@@ -11,11 +11,11 @@ FEATURES = Features({
 
 def run_tokenize_sft(cfg):    
     tokenizer = AutoTokenizer.from_pretrained(cfg.tokenizer)
-    it = duckdb.sql("SELECT conversation FROM read_parquet(?)", params=[cfg.input_dir+"/**/*.parquet"]).fetchall()
+    rel = duckdb.sql("SELECT conversation FROM read_parquet(?)", params=[cfg.input_dir+"/**/*.parquet"])
     
     convs = []
 
-    for row in it:
+    for row in rel.fetchall():
         messages = []
         for m in row[0]:
             role = m.get("role")

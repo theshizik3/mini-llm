@@ -9,17 +9,14 @@ import duckdb
 
 
 def make_iterator(cfg):
-    cur = duckdb.sql("SELECT text FROM read_parquet(?)", params=[cfg.dataset_path+"/**/*.parquet"])
+    rel = duckdb.sql("SELECT text FROM read_parquet(?)", params=[cfg.dataset_path+"/**/*.parquet"])
     length = 0
-    offset = 0
-    while True:
-        batch = cur.offset(offset).limit(cfg.batch_size).fetchall()
-        if not batch:
-            break
-        offset += len(batch)
-        for row in batch:
-            yield row[0]
-            length += len(row[0])
+
+    for batch in rel.fetch_record_batch(cfg.batch_size):
+        texts = batch.column("text").to_pylist()
+        for text in texts:
+            yield text
+            length += len(text)
             if length > cfg.train_seq_len:
                 return
 
